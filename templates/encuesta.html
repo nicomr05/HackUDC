@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='encuesta.css') }}">
+</head>
+<body>
+
+    <div class="survey-container" id="survey-container">
+        <h2 id="question-text">¿Estás de acuerdo con esta afirmación?</h2>
+        
+        <form id="survey-form">
+            <input type="radio" name="response" value="En desacuerdo"> En desacuerdo <br>
+            <input type="radio" name="response" value="Indiferente"> Indiferente <br>
+            <input type="radio" name="response" value="De acuerdo"> De acuerdo <br>
+            <button type="button" onclick="nextQuestion()">Siguiente</button>
+        </form>
+    </div>
+
+    <div class="survey-container hidden" id="result-container">
+        <h2>Resultados</h2>
+        <p id="result-text"></p>
+    </div>
+
+    <script>
+        let responses = [];
+        let questions = [
+            "¿Te gusta la programación?",
+            "¿Te gustaría aprender más sobre inteligencia artificial?",
+            "¿Crees que la tecnología mejora la vida?",
+            "¿Usas redes sociales todos los días?"
+        ];
+        let currentQuestion = 0;
+
+        function nextQuestion() {
+            let selectedOption = document.querySelector('input[name="response"]:checked');
+            if (!selectedOption) {
+                alert("Selecciona una opción antes de continuar.");
+                return;
+            }
+
+            responses.push(selectedOption.value);
+            selectedOption.checked = false;
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                document.getElementById("question-text").textContent = questions[currentQuestion];
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('survey-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+            
+            let resultText = "Tus respuestas:<br>";
+            responses.forEach((res, index) => {
+                resultText += `<strong>Pregunta ${index + 1}:</strong> ${res} <br>`;
+            });
+
+            document.getElementById('result-text').innerHTML = resultText;
+
+            sendResultsToServer();
+        }
+
+        function sendResultsToServer() {
+            fetch('/guardar_respuestas', {
+                method: 'POST',
+                body: JSON.stringify({ respuestas: responses }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+              .then(data => {
+                  window.location.href = "/resultados";
+              });
+        }
+    </script>
+
+</body>
+</html>
