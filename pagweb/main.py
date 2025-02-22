@@ -1,7 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, session, request
 
-app = Flask("Pagina")
-app.secret_key = "gcedgeigia"
+app = Flask("Encuestas")
+app.secret_key = "xxxx"
 
 
 def _parser(text_name:str) -> str:
@@ -9,53 +9,76 @@ def _parser(text_name:str) -> str:
         text_name += ".txt"
 
     with open(f"{text_name}", "r") as file:
-        paquetes = file.read().split("\n\n")[:-1]
-        preguntas = paquetes.split("\n")[::2] #mantiene solo los elementos pares de la lista
-        puntuaciones = paquetes.split("\n")[1::2]
+        bloques = file.read().split("\n\n")[:-1]
 
-    preguntas = []
-    points = []
-    for i in range(len(filas)):
-        if i%2 == 0:
-            preguntas.append(filas[i])
-        else:
-            puntuaciones.append(tuple(filas[i].split(" ")))
+    for bloque in bloques:
+        info = bloque.split("\n")
 
-    return preguntas, points
+        preguntas = info[0]
+        codigos = info[1]
 
-gced = []
-gia = []
-gei = []
+        puntuaciones = tuple()
+
+
+    return preguntas, puntuaciones, 
+
+
 def _calc_stats(stats:list) -> list:
-    p_gced, p_gia, p_gei = list(map(int, puntuaciones))
-    gced
+    p_gced, p_gia, p_gei = list(map(int, stats))
+    gced += p_gced
+    gia += p_gia
+    gei += p_gei
+    #si lo hacemos así, hay que llamar a _calc_stats cuando el usuario haya respondido a todas las preguntas
     
-        
-    return stats
+    return gced*0.2, gia*0.2, gei*0.2
 
+
+global respuestas
 
 @app.route("/", methods=["GET", "POST"])
 def home() -> str:
     preguntas, puntuaciones = _parser("preguntas.txt")
-    return render_template("pagina_principal.html", lista = preguntas)
+
+    if request.method == "GET":
+        prueba_puntuaciones = {"GCED":0,
+                               "GIA":0,
+                               "GEI":0}
+
+        respuestas = request.form.items()
+
+        codigo_final = []
+        for puntuacion, respuesta in zip(puntuaciones, respuestas):
+            if respuesta == "d":
+                codigo_final.append([k for k in puntuacion[0]])
+            elif respuesta == "i":
+                codigo_final.append([k for k in puntuacion[1]])
+            elif respuesta == "a":
+                codigo_final.append([k for k in puntuacion[2]])
+
+        for codigo in codigo_final:
+            prueba_puntuaciones["GCED"] += codigo[0]
+            prueba_puntuaciones["GIA"]  += codigo[1]
+            prueba_puntuaciones["GEI"]  += codigo[2]
+
+    return render_template("index.html", preguntas=preguntas, respuestas=respuestas)
 
 
 @app.route("/encuesta")
 def encuesta():
-    return render_template('encuesta.html')  # Página principal con la encuesta
+    return render_template('encuesta.html')
 
 
 @app.route("/guardar_respuestas", methods=["POST"])
 def guardar_respuestas():
     data = request.json
-    session["respuestas"] = data["respuestas"]  # Guardar respuestas en sesión
+    session["respuestas"] = data["respuestas"]
     return jsonify({"status": "success"})
 
 
 @app.route("/resultados")
 def resultados():
     respuestas = session.get("respuestas", [])
-    respuestas = list(enumerate(respuestas, start=1))  # Enumerar antes de enviarlo a la plantilla
+    respuestas = list(enumerate(respuestas, start=1))
     return render_template("resultados.html", respuestas=respuestas)
 
 

@@ -7,17 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='resultados.css') }}">
 </head>
 <body>
-
-    <div class="result-container">
-        <h2>Tus respuestas</h2>
-        <ul>
-            {% for i, respuesta in respuestas %}
-                <li><strong>Pregunta {{ i }}:</strong> {{ respuesta }}</li>
-            {% endfor %}
-        </ul>
-        
-        <a href="/">Volver a la encuesta</a>
-    </div>
-
+    <form action = "/" method = "POST">
+        {% for pregunta in preguntas %}
+        <label for="pregunta_{{ loop.index }}">{{ pregunta }}</label>
+        <select id="pregunta_{{ loop.index }}" name="pregunta_{{ loop.index }}" required>
+            <option value="d">Desacuerdo</option>
+            <option value="i">Indiferencia</option>
+            <option value="a">Acuerdo</option>
+        </select>
+        {% endfor %}
+        <input type = "submit" value = "Completar">
+    </form>
 </body>
 </html>
