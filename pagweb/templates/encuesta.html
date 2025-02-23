@@ -9,14 +9,17 @@
 <body>
 
     <div class="survey-container" id="survey-container">
-        <h2 id="question-text">¿Estás de acuerdo con esta afirmación?</h2>
+        <h2 id="question-text">
+            <!-- Aquí se mostrará la primera pregunta -->
+        </h2>
 
         <form id="survey-form">
             <input type="radio" name="response" value="En desacuerdo"> En desacuerdo <br>
             <input type="radio" name="response" value="Indiferente"> Indiferente <br>
             <input type="radio" name="response" value="De acuerdo"> De acuerdo <br>
-            <button type="button" onclick="nextQuestion()">Siguiente</button>
+            <button type="button" onclick="nextQuestion()" class="btn-next">Siguiente</button>
         </form>
+        
     </div>
 
     <div class="survey-container hidden" id="result-container">
@@ -27,12 +30,17 @@
     <script>
         let responses = [];
         let questions = [
-            "¿Te gusta la programación?",
-            "¿Te gustaría aprender más sobre inteligencia artificial?",
-            "¿Crees que la tecnología mejora la vida?",
-            "¿Usas redes sociales todos los días?"
+            "¿Te atrae el análisis estadístico y numérico?",
+            "¿Te interesan los métodos de predicción de resultados sobre conjuntos de datos?",
+            "¿Te atrae el Machine Learning?",
+            "¿Te duchas más de una vez a la semana?"
         ];
         let currentQuestion = 0;
+
+        // Función que se ejecuta cuando se carga la página
+        window.onload = function() {
+            document.getElementById("question-text").textContent = questions[currentQuestion]; // Mostrar la primera pregunta al cargar la página
+        }
 
         function nextQuestion() {
             let selectedOption = document.querySelector('input[name="response"]:checked');
@@ -46,6 +54,7 @@
 
             currentQuestion++;
 
+            // Si aún hay preguntas por mostrar
             if (currentQuestion < questions.length) {
                 document.getElementById("question-text").textContent = questions[currentQuestion];
             } else {
