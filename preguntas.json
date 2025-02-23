@@ -1,0 +1,32 @@
+[
+    {
+        "Pregunta":"Te atrae el análisis estadístico y numérico",
+        "Desacuerdo":"012",
+        "Indiferencia":"012",
+        "Acuerdo":"210"
+    },
+    {
+        "Pregunta":"Te interesan los métodos de predicción de resultados sobre conjuntos de datos",
+        "Desacuerdo":"012",
+        "Indiferencia":"000",
+        "Acuerdo":"210"
+    },
+    {
+        "Pregunta":"Te interesa entender el por qué de las tendecias y patrones datos",
+        "Desacuerdo":"100",
+        "Indiferencia":"021",
+        "Acuerdo":"221"
+    },
+    {
+        "Pregunta":"Te atraen los componentes electrónicos físicos",
+        "Desacuerdo":"102",
+        "Indiferencia":"101",
+        "Acuerdo":"120"
+    },
+    {
+        "Pregunta":"Te duchas mas de una vez a la semana",
+        "Desacuerdo":"002",
+        "Indiferencia":"010",
+        "Acuerdo":"210"
+    }
+]
